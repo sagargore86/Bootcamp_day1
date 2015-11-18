@@ -1,5 +1,6 @@
 package com.example_lab1.bootcamp.bootcamp_day1;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 public class StatusActivity extends AppCompatActivity implements
         View.OnClickListener, TextWatcher {
 
+    private static String TAG = StatusActivity.class.getSimpleName();
     private Button mPostButton;
     private EditText mTextStatus;
     private TextView mTextCount;
@@ -36,29 +38,7 @@ public class StatusActivity extends AppCompatActivity implements
 
         mPostButton.setOnClickListener(this);
         mTextStatus.addTextChangedListener(this);
-        mTextStatus.setText(null);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_yamba, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        mTextStatus.setText(getIntent().getStringExtra(StatusUpdateService.EXTRA_MESSAGE));
     }
 
     @Override
@@ -85,5 +65,39 @@ public class StatusActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         Toast.makeText(this, "Click!", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, " Input Text " + mTextStatus.getText().toString());
+        Intent intent = new Intent(this, StatusUpdateService.class);
+        intent.putExtra(StatusUpdateService.EXTRA_MESSAGE, mTextStatus.getText().toString());
+
+        startService(intent);
+        mTextStatus.getText().clear();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_yamba, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_settings:
+                Log.d(TAG, "Settings selected");
+                break;
+            case R.id.action_refresh:
+                Log.d(TAG, "Refresh selected");
+                startService(new Intent(this, RefreshService.class));
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
