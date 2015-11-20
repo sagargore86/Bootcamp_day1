@@ -12,12 +12,11 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".StatusActivity"
+            android:parentActivityName="com.example_lab1.bootcamp.bootcamp_day1.MainActivity"
             android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example_lab1.bootcamp.bootcamp_day1.MainActivity" />
         </activity>
 
         <service
@@ -25,7 +24,21 @@
             android:exported="false" />
         <service
             android:name=".RefreshService"
-            android:exported="false"/>
+            android:exported="false" />
+
+        <provider
+            android:name=".StatusProvider"
+            android:authorities="com.example_lab1.bootcamp.bootcamp_day1.StatusProvider"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -14,4 +14,16 @@
         android:icon="@android:drawable/ic_menu_rotate"
         app:showAsAction="ifRoom"
         />
+
+    <item
+        android:id="@+id/action_purge"
+        android:orderInCategory="90"
+        app:showAsAction="never"
+        android:title="@string/action_purge"/>
+
+    <item
+        android:id="@+id/action_post"
+        android:icon="@android:drawable/ic_menu_send"
+        app:showAsAction="ifRoom"
+        android:title="Post"/>
 </menu>

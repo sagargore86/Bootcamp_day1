@@ -4,4 +4,5 @@
     <string name="input_text">Enter text here</string>
     <string name="input_text_land">Landscape: Enter text here</string>
     <string name="action_refresh">Refresh</string>
+    <string name="action_purge">Purge</string>
 </resources>

@@ -30,6 +30,8 @@ public class StatusActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Action bar stuff
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_status);
         mPostButton = (Button) findViewById(R.id.status_button);
         mTextStatus = (EditText) findViewById(R.id.status_text);
@@ -65,39 +67,13 @@ public class StatusActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         Toast.makeText(this, "Click!", Toast.LENGTH_SHORT).show();
+
         Log.d(TAG, " Input Text " + mTextStatus.getText().toString());
         Intent intent = new Intent(this, StatusUpdateService.class);
         intent.putExtra(StatusUpdateService.EXTRA_MESSAGE, mTextStatus.getText().toString());
 
         startService(intent);
         mTextStatus.getText().clear();
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_yamba, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.action_settings:
-                Log.d(TAG, "Settings selected");
-                break;
-            case R.id.action_refresh:
-                Log.d(TAG, "Refresh selected");
-                startService(new Intent(this, RefreshService.class));
-                return true;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
+        finish();
     }
 }
