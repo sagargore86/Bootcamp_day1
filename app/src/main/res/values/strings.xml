@@ -5,4 +5,8 @@
     <string name="input_text_land">Landscape: Enter text here</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_purge">Purge</string>
+    <string name="username_key">username</string>
+    <string name="username">User Name</string>
+    <string name="password_key">password</string>
+    <string name="password">Password</string>
 </resources>

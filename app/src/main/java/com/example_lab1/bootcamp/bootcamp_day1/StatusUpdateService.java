@@ -5,6 +5,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.support.v7.app.NotificationCompat;
 
@@ -69,9 +72,20 @@ public class StatusUpdateService extends IntentService {
         String message = "Testing: " + intent.getStringExtra(EXTRA_MESSAGE);
         Log.d(TAG, " Received message " + message);
         try {
-            String username = "student";
-            String password = "password";
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            final String username =
+                    prefs.getString(getString(R.string.username_key), "");
+            final String password =
+                    prefs.getString(getString(R.string.password_key), "");
 
+            Log.e(TAG, "Sagar : " + username + " " + password);
+
+            // Check that username and password are not empty
+            if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+                Log.w(TAG, "Please update your username and password");
+                return;
+            }
             PostProgressNotification();
 
             YambaClientInterface cloud = YambaClient.getClient(username, password);

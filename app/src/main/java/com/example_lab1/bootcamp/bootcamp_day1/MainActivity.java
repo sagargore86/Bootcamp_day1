@@ -18,31 +18,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor>,
-        SimpleCursorAdapter.ViewBinder {
+        implements TimelineFragment.OnTimelineItemSelectedListener{
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int LOADER_ID = 42;
-    private static final String[] FROM = {
-            StatusContract.Column.USER,
-            StatusContract.Column.MESSAGE,
-            StatusContract.Column.CREATED_AT };
-    private static final int[] TO = {
-            R.id.text_user,
-            R.id.text_message,
-            R.id.text_created_at };
 
-    private SimpleCursorAdapter mAdapter;
+    //Global notifier of when timeline is in the foreground
+    private static boolean inTimeline = false;
+    public static boolean isInTimeline() {
+        return inTimeline;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ListView timeline = new ListView(this);
-        setContentView(timeline);
-        mAdapter = new SimpleCursorAdapter(this, R.layout.list_item,
-                null, FROM, TO, 0);
-        mAdapter.setViewBinder(this);
-        timeline.setAdapter(mAdapter);
-        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+    protected void onResume() {
+        super.onResume();
+        inTimeline = true;
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        inTimeline = false;
     }
 
     @Override
@@ -50,6 +44,7 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_yamba, menu);
+        setContentView(R.layout.activity_main);
         return true;
     }
 
@@ -61,7 +56,8 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.action_settings:
                 Log.d(TAG, "Settings selected");
-                break;
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
             case R.id.action_refresh:
                 Log.d(TAG, "Refresh selected");
                 startService(new Intent(this, RefreshService.class));
@@ -82,37 +78,57 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        //Return all items from StatusProvider
-        return new CursorLoader(this, StatusContract.CONTENT_URI,
-                null, null, null, StatusContract.DEFAULT_SORT);
-    }
+    public void onTimelineItemSelected(long id) {
+        //Toast.makeText(this, "Click " + id, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Sagar: Clik " + id);
+        //startActivity(new Intent(this, DetailsActivity.class));
+        // Get the details fragment
+        DetailsFragment fragment = (DetailsFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_details);
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "onLoadFinished with cursor: " + data.getCount());
-        mAdapter.swapCursor(data);
-    }
+        // Is details fragment visible?
+        if (fragment != null && fragment.isVisible()) {
+            fragment.updateView(id);
+        } else {
+            Intent intent = new Intent(this, DetailsActivity.class);
+            intent.putExtra(StatusContract.Column.ID, id);
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-    }
-
-    @Override
-    public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-        long timestamp;
-
-        // Custom binding
-        switch (view.getId()) {
-            case R.id.text_created_at:
-                timestamp = cursor.getLong(columnIndex);
-                CharSequence relTime = DateUtils
-                        .getRelativeTimeSpanString(timestamp);
-                ((TextView) view).setText(relTime);
-                return true;
-            default:
-                return false;
+            startActivity(intent);
         }
     }
+//
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+//        //Return all items from StatusProvider
+//        return new CursorLoader(this, StatusContract.CONTENT_URI,
+//                null, null, null, StatusContract.DEFAULT_SORT);
+//    }
+//
+//    @Override
+//    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//        Log.d(TAG, "onLoadFinished with cursor: " + data.getCount());
+//        mAdapter.swapCursor(data);
+//    }
+//
+//    @Override
+//    public void onLoaderReset(Loader<Cursor> loader) {
+//        mAdapter.swapCursor(null);
+//    }
+//
+//    @Override
+//    public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+//        long timestamp;
+//
+//        // Custom binding
+//        switch (view.getId()) {
+//            case R.id.text_created_at:
+//                timestamp = cursor.getLong(columnIndex);
+//                CharSequence relTime = DateUtils
+//                        .getRelativeTimeSpanString(timestamp);
+//                ((TextView) view).setText(relTime);
+//                return true;
+//            default:
+//                return false;
+//        }
+//    }
 }
