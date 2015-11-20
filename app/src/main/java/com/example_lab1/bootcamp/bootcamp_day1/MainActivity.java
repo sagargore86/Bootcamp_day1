@@ -8,14 +8,18 @@ import android.support.v4.content.CursorLoader;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor>{
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+        SimpleCursorAdapter.ViewBinder {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int LOADER_ID = 42;
     private static final String[] FROM = {
@@ -35,9 +39,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(timeline);
         mAdapter = new SimpleCursorAdapter(this, R.layout.list_item,
                 null, FROM, TO, 0);
-
+        mAdapter.setViewBinder(this);
         timeline.setAdapter(mAdapter);
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+
     }
 
     @Override
@@ -92,5 +97,22 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+        long timestamp;
+
+        // Custom binding
+        switch (view.getId()) {
+            case R.id.text_created_at:
+                timestamp = cursor.getLong(columnIndex);
+                CharSequence relTime = DateUtils
+                        .getRelativeTimeSpanString(timestamp);
+                ((TextView) view).setText(relTime);
+                return true;
+            default:
+                return false;
+        }
     }
 }
