@@ -9,4 +9,6 @@
     <string name="username">User Name</string>
     <string name="password_key">password</string>
     <string name="password">Password</string>
+    <string name="interval_key">interval</string>
+    <string name="refresh_interval">Refresh Interval</string>
 </resources>

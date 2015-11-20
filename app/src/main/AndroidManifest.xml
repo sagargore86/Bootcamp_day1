@@ -48,13 +48,26 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example_lab1.bootcamp.bootcamp_day1.MainActivity" />
         </activity>
-        <activity android:name=".SettingsActivity"
-          android:parentActivityName="com.example_lab1.bootcamp.bootcamp_day1.SettingsActivity">
-    <!-- Parent activity meta-data to support 4.0 and lower -->
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example_lab1.bootcamp.bootcamp_day1.MainActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".SettingsActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example_lab1.bootcamp.bootcamp_day1.MainActivity" />
         </activity>
+
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action
+                    android:name="com.example_lab1.bootcamp.bootcamp_day1.action.UPDATED_INTERVAL" />
+            </intent-filter>
+
+        </receiver>
     </application>
 
 </manifest>
